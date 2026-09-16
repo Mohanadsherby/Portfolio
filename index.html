@@ -1,0 +1,516 @@
+<title>Mohanad Sherby — DevOps</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#F4F6FB;
+    --surface:#FFFFFF;
+    --surface-2:#EDF1F8;
+    --ink:#0C1322;
+    --ink-soft:#48546C;
+    --ink-faint:#6B7890;
+    --line:#DBE2EE;
+    --line-strong:#C3CEE0;
+    --accent:#2F6BFF;
+    --accent-2:#7C3AED;
+    --accent-ink:#1D4FD8;
+    --accent-wash:#E8EFFF;
+    --healthy:#15924B;
+    --healthy-wash:#E3F5EA;
+    --grad:linear-gradient(100deg, #2F6BFF 0%, #6D5EF5 55%, #8B5CF6 100%);
+    --shadow:0 1px 2px rgba(12,19,34,.04), 0 8px 24px rgba(12,19,34,.06);
+    --shadow-lift:0 2px 4px rgba(12,19,34,.06), 0 18px 44px rgba(12,19,34,.12);
+
+    --display:'Sora', system-ui, sans-serif;
+    --body:'IBM Plex Sans', system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --paper:#070B14;
+      --surface:#0F1929;
+      --surface-2:#152238;
+      --ink:#EAEFF9;
+      --ink-soft:#9CAAC4;
+      --ink-faint:#6C7C99;
+      --line:#20304A;
+      --line-strong:#2C3E5C;
+      --accent:#4C86FF;
+      --accent-2:#A78BFA;
+      --accent-ink:#8DB0FF;
+      --accent-wash:#11213E;
+      --healthy:#37C972;
+      --healthy-wash:#0F2A1D;
+      --grad:linear-gradient(100deg, #4C86FF 0%, #8B7BF7 55%, #A78BFA 100%);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+      --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 22px 54px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#070B14; --surface:#0F1929; --surface-2:#152238;
+    --ink:#EAEFF9; --ink-soft:#9CAAC4; --ink-faint:#6C7C99;
+    --line:#20304A; --line-strong:#2C3E5C;
+    --accent:#4C86FF; --accent-2:#A78BFA; --accent-ink:#8DB0FF; --accent-wash:#11213E;
+    --healthy:#37C972; --healthy-wash:#0F2A1D;
+    --grad:linear-gradient(100deg, #4C86FF 0%, #8B7BF7 55%, #A78BFA 100%);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 22px 54px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none !important; transition:none !important} }
+
+  .wrap{max-width:1080px; margin:0 auto; padding-inline:24px}
+  a{color:inherit}
+  h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; letter-spacing:-.02em}
+  .grad-text{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+
+  .eyebrow{font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-ink); display:inline-flex; align-items:center; gap:9px}
+  .eyebrow::before{content:""; width:24px; height:2px; border-radius:2px; background:var(--grad)}
+
+  /* Top bar */
+  .topbar{position:sticky; top:0; z-index:50; backdrop-filter:saturate(150%) blur(12px); background:color-mix(in srgb, var(--paper) 80%, transparent); border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between; height:60px}
+  .brand{font-family:var(--mono); font-weight:600; font-size:14px; display:flex; align-items:center; gap:9px}
+  .brand .dot{width:9px; height:9px; border-radius:50%; background:var(--healthy); box-shadow:0 0 0 4px var(--healthy-wash)}
+  .navlinks{display:flex; gap:24px; align-items:center}
+  .navlinks a{font-family:var(--mono); font-size:13px; color:var(--ink-soft); text-decoration:none}
+  .navlinks a:hover{color:var(--accent-ink)}
+  @media (max-width:720px){ .navlinks a:not(.themebtn){display:none} }
+  .themebtn{font-family:var(--mono); font-size:12px; cursor:pointer; background:var(--surface); color:var(--ink-soft); border:1px solid var(--line); border-radius:8px; padding:6px 11px; display:inline-flex; align-items:center; gap:7px}
+  .themebtn:hover{border-color:var(--line-strong); color:var(--ink)}
+
+  /* Hero */
+  .hero{padding-block:64px 40px; position:relative; overflow:hidden}
+  .hero::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:40px 40px;
+    -webkit-mask-image:radial-gradient(ellipse 78% 60% at 72% 8%, #000 0%, transparent 70%);
+    mask-image:radial-gradient(ellipse 78% 60% at 72% 8%, #000 0%, transparent 70%); opacity:.5}
+  .hero .wrap{position:relative; z-index:1}
+  .monogram{width:64px; height:64px; border-radius:18px; background:var(--grad); color:#fff; font-family:var(--display); font-weight:800; font-size:24px; letter-spacing:-.03em; display:grid; place-items:center; box-shadow:var(--shadow-lift); margin-bottom:22px}
+  .hero h1{font-size:clamp(2.5rem, 6.6vw, 4.5rem); font-weight:800; line-height:1.02}
+  .hero .role{font-family:var(--display); font-weight:600; font-size:clamp(1.1rem,2.5vw,1.5rem); color:var(--ink); margin-top:16px; letter-spacing:-.01em}
+  .lede{max-width:60ch; color:var(--ink-soft); margin-top:18px; font-size:1.07rem}
+
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:24px}
+  .chip{font-family:var(--mono); font-size:12.5px; font-weight:500; display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); padding:7px 13px; border-radius:999px; box-shadow:var(--shadow)}
+  .chip .led{width:7px; height:7px; border-radius:50%; background:var(--healthy)}
+  .chip.k .led{background:var(--accent)}
+
+  .cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px}
+  .btn{font-family:var(--body); font-weight:600; font-size:14.5px; text-decoration:none; padding:12px 20px; border-radius:11px; display:inline-flex; align-items:center; gap:9px; transition:transform .15s ease, box-shadow .15s ease, border-color .15s, color .15s}
+  .btn.primary{background:var(--grad); color:#fff; box-shadow:var(--shadow-lift)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{background:var(--surface); color:var(--ink); border:1px solid var(--line-strong)}
+  .btn.ghost:hover{border-color:var(--accent); color:var(--accent-ink); transform:translateY(-2px)}
+  .btn svg{width:16px; height:16px}
+
+  /* Stat tiles */
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:40px}
+  @media (max-width:760px){ .stats{grid-template-columns:repeat(2,1fr)} }
+  .stat{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 18px; box-shadow:var(--shadow)}
+  .stat .num{font-family:var(--display); font-weight:800; font-size:2rem; line-height:1; letter-spacing:-.03em}
+  .stat .cap{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); margin-top:10px; line-height:1.45; text-transform:uppercase; letter-spacing:.05em}
+
+  /* Pipeline */
+  .pipeband{border-block:1px solid var(--line); background:var(--surface)}
+  .pipeband .wrap{padding-block:34px}
+  .pipe-title{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:8px}
+  .pipe-title h2{font-size:clamp(1.5rem,3.2vw,2rem); font-weight:700; margin-top:12px}
+  .pipe-title .status{font-family:var(--mono); font-size:12px; color:var(--healthy); display:inline-flex; align-items:center; gap:8px}
+  .pipe-title .status .led{width:8px;height:8px;border-radius:50%;background:var(--healthy); box-shadow:0 0 0 4px var(--healthy-wash); animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--healthy-wash)} 50%{box-shadow:0 0 0 6px transparent}}
+  .pipe-sub{color:var(--ink-soft); margin:0 0 24px; max-width:60ch}
+  .pipeline{display:flex; align-items:stretch; overflow-x:auto; padding-bottom:6px}
+  .stage{flex:1 1 0; min-width:134px; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:14px 15px; position:relative}
+  .stage + .stage{margin-left:26px}
+  .stage + .stage::before{content:""; position:absolute; left:-26px; top:50%; width:26px; height:2px; background:linear-gradient(90deg, var(--line-strong), var(--accent))}
+  .stage + .stage::after{content:""; position:absolute; left:-8px; top:50%; transform:translateY(-50%); width:0;height:0;border-left:7px solid var(--accent); border-top:5px solid transparent; border-bottom:5px solid transparent}
+  .stage .n{font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.1em}
+  .stage h4{font-family:var(--display); font-size:15px; font-weight:600; margin:4px 0 6px}
+  .stage p{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); margin:0; line-height:1.5}
+
+  /* Sections */
+  section{padding-block:62px}
+  .sec-head{max-width:64ch; margin-bottom:34px}
+  .sec-head h2{font-size:clamp(1.8rem,3.8vw,2.5rem); font-weight:700; margin-top:14px}
+  .sec-head p{color:var(--ink-soft); margin-top:12px}
+
+  .stack{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  @media (max-width:760px){ .stack{grid-template-columns:1fr} }
+  .stackcard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 22px 20px; box-shadow:var(--shadow); transition:border-color .15s, transform .15s}
+  .stackcard:hover{border-color:var(--line-strong); transform:translateY(-2px)}
+  .stackcard .lbl{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink)}
+  .stackcard h3{font-size:1.12rem; font-weight:600; margin:8px 0 14px}
+  .tags{display:flex; flex-wrap:wrap; gap:8px}
+  .tag{font-family:var(--mono); font-size:12px; color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--line); padding:4px 10px; border-radius:7px}
+
+  .impact{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  @media (max-width:860px){ .impact{grid-template-columns:1fr} }
+  .icard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px 22px; box-shadow:var(--shadow); position:relative; overflow:hidden; transition:transform .15s, border-color .15s}
+  .icard:hover{transform:translateY(-2px); border-color:var(--line-strong)}
+  .icard::after{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--grad)}
+  .icard .ic{width:40px; height:40px; border-radius:11px; background:var(--accent-wash); color:var(--accent-ink); display:grid; place-items:center; margin-bottom:16px}
+  .icard .ic svg{width:21px;height:21px}
+  .icard h3{font-size:1.06rem; font-weight:600; margin-bottom:8px}
+  .icard p{font-size:.94rem; color:var(--ink-soft); margin:0}
+
+  .xp{background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+  .xp-head{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:baseline; padding:26px 28px; border-bottom:1px solid var(--line)}
+  .xp-head h3{font-size:1.3rem; font-weight:700}
+  .xp-head .co{font-family:var(--mono); color:var(--accent-ink); font-size:14px; margin-top:6px}
+  .xp-head .when{font-family:var(--mono); font-size:13px; color:var(--ink-faint); white-space:nowrap}
+  .xp-body{padding:8px 28px 26px}
+  .xp-body ul{list-style:none; margin:0; padding:0}
+  .xp-body li{position:relative; padding:14px 0 14px 26px; border-bottom:1px solid var(--line); color:var(--ink-soft)}
+  .xp-body li:last-child{border-bottom:0}
+  .xp-body li::before{content:""; position:absolute; left:0; top:21px; width:8px; height:8px; border-radius:2px; background:var(--accent); transform:rotate(45deg)}
+  .xp-body li b{color:var(--ink); font-weight:600}
+  .xp-body code{font-family:var(--mono); font-size:.85em; background:var(--surface-2); border:1px solid var(--line); padding:1px 5px; border-radius:5px}
+
+  .certs{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  @media (max-width:760px){ .certs{grid-template-columns:1fr} }
+  .cert{display:flex; gap:16px; align-items:flex-start; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow); transition:border-color .15s, transform .15s}
+  .cert:hover{border-color:var(--line-strong); transform:translateY(-2px)}
+  .cert .badge{flex:none; width:54px; height:54px; border-radius:12px; background:var(--grad); color:#fff; font-family:var(--display); font-weight:800; font-size:15px; display:grid; place-items:center; letter-spacing:-.02em}
+  .cert .meta h3{font-size:1.02rem; font-weight:600}
+  .cert .meta .verify{font-family:var(--mono); font-size:11.5px; color:var(--healthy); display:inline-flex; align-items:center; gap:6px; margin-top:6px}
+  .cert .meta .verify svg{width:13px;height:13px}
+  .cert .meta .cid{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); margin-top:8px}
+
+  .metarow{display:grid; grid-template-columns:1.4fr 1fr; gap:16px; margin-top:20px}
+  @media (max-width:760px){ .metarow{grid-template-columns:1fr} }
+  .panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow)}
+  .panel h3{font-size:1.02rem; font-weight:600; margin-bottom:12px}
+  .kv{display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); font-size:.93rem}
+  .kv:last-child{border-bottom:0}
+  .kv .k{font-family:var(--mono); font-size:12.5px; color:var(--ink-faint)}
+  .kv .v{color:var(--ink); font-weight:500; text-align:right}
+
+  .contact{background:var(--surface); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow-lift); padding:44px; text-align:center; position:relative; overflow:hidden}
+  .contact::before{content:""; position:absolute; inset:0; z-index:0; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:34px 34px; opacity:.4; -webkit-mask-image:radial-gradient(circle at 50% 0%, #000, transparent 70%); mask-image:radial-gradient(circle at 50% 0%, #000, transparent 70%)}
+  .contact > *{position:relative; z-index:1}
+  .contact h2{font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700}
+  .contact p{color:var(--ink-soft); max-width:48ch; margin:14px auto 0}
+  .contact .cta{justify-content:center}
+  footer{padding-block:40px 56px; text-align:center; color:var(--ink-faint); font-family:var(--mono); font-size:12.5px}
+  footer .sep{color:var(--line-strong); margin:0 10px}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>Mohanad Sherby</div>
+    <nav class="navlinks">
+      <a href="#stack">Skills</a>
+      <a href="#impact">Impact</a>
+      <a href="#experience">Experience</a>
+      <a href="#certs">Certifications</a>
+      <a href="#contact">Contact</a>
+      <button class="themebtn" id="themeToggle" aria-label="Toggle color theme"><span id="themeIcon">◐</span> theme</button>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="monogram">MS</div>
+    <span class="eyebrow">Senior DevOps / Platform Engineer · Cairo, Egypt</span>
+    <h1>Mohanad Ashraf <span class="grad-text">Sherby</span></h1>
+    <p class="role">I design, automate and run cloud platforms — from infrastructure all the way to production.</p>
+    <p class="lede">DevOps engineer with 3+ years owning AWS and Kubernetes (EKS) platforms end to end — Terraform-provisioned infrastructure, Jenkins CI, Argo CD delivery and 24/7 production operations. CKA &amp; CKS certified, with security and observability built into the pipeline, not bolted on afterwards.</p>
+
+    <div class="chips">
+      <span class="chip"><span class="led"></span>3+ yrs in production</span>
+      <span class="chip k"><span class="led"></span>CKA · Kubernetes Admin</span>
+      <span class="chip k"><span class="led"></span>CKS · Kubernetes Security</span>
+      <span class="chip"><span class="led"></span>AWS · EKS</span>
+      <span class="chip"><span class="led"></span>GitOps · Argo CD</span>
+    </div>
+
+    <div class="cta">
+      <a class="btn primary" href="https://linkedin.com/in/mohanadsherby" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V10.4H5.67v7.94h2.67zM7 9.24a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zm11.34 9.1v-4.36c0-2.33-1.25-3.42-2.91-3.42a2.5 2.5 0 0 0-2.27 1.25v-1.07h-2.67c.03.75 0 7.94 0 7.94h2.67v-4.43c0-.24.02-.48.09-.65.19-.48.62-.97 1.35-.97.96 0 1.34.73 1.34 1.79v4.26h2.67z"/></svg>
+        Connect on LinkedIn
+      </a>
+      <a class="btn ghost" href="https://github.com/Mohanadsherby" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.554 0-.273-.01-.998-.015-1.96-3.196.695-3.87-1.54-3.87-1.54-.523-1.33-1.278-1.684-1.278-1.684-1.044-.714.08-.7.08-.7 1.155.082 1.763 1.187 1.763 1.187 1.026 1.758 2.693 1.25 3.35.955.104-.743.401-1.25.73-1.538-2.552-.29-5.236-1.276-5.236-5.678 0-1.254.448-2.28 1.183-3.084-.119-.29-.513-1.46.112-3.043 0 0 .965-.309 3.163 1.178a11 11 0 0 1 2.88-.387c.977.004 1.96.132 2.88.387 2.196-1.487 3.16-1.178 3.16-1.178.626 1.583.232 2.753.114 3.043.737.804 1.182 1.83 1.182 3.084 0 4.413-2.688 5.385-5.248 5.67.413.355.78 1.056.78 2.13 0 1.538-.014 2.778-.014 3.157 0 .307.207.666.79.553A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+        GitHub
+      </a>
+      <a class="btn ghost" href="mailto:mohanadsherby@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Email me
+      </a>
+      <a class="btn ghost" href="Mohanad_Sherby_Senior_DevOps_CV.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Download CV
+      </a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num grad-text">3+</div><div class="cap">Years running<br>production platforms</div></div>
+      <div class="stat"><div class="num grad-text">5</div><div class="cap">Kubernetes &amp; CNCF<br>certifications</div></div>
+      <div class="stat"><div class="num grad-text">6</div><div class="cap">Stage automated<br>CI/CD pipeline</div></div>
+      <div class="stat"><div class="num grad-text">AWS</div><div class="cap">Primary cloud<br>on EKS</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="pipeband">
+  <div class="wrap">
+    <div class="pipe-title">
+      <div>
+        <span class="eyebrow">How I ship code</span>
+        <h2>My CI/CD &amp; GitOps pipeline</h2>
+      </div>
+      <span class="status"><span class="led"></span>Synced · Self-healing · Drift-free</span>
+    </div>
+    <p class="pipe-sub">Every service travels the same automated path — from a Git commit to a running pod on EKS — with security scanning and GitOps delivery built in at every step.</p>
+    <div class="pipeline">
+      <div class="stage"><div class="n">01 · SOURCE</div><h4>Code</h4><p>Git · semantic versioning</p></div>
+      <div class="stage"><div class="n">02 · BUILD</div><h4>Jenkins CI</h4><p>Maven · Docker build</p></div>
+      <div class="stage"><div class="n">03 · SCAN</div><h4>Security gates</h4><p>Trivy · SonarQube · Checkmarx</p></div>
+      <div class="stage"><div class="n">04 · REGISTRY</div><h4>Artifacts</h4><p>Nexus · JFrog · ECR</p></div>
+      <div class="stage"><div class="n">05 · DELIVER</div><h4>Argo CD / Flux</h4><p>GitOps sync &amp; prune</p></div>
+      <div class="stage"><div class="n">06 · RUN</div><h4>EKS</h4><p>Helm · RBAC · autoscale</p></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section id="stack">
+    <div class="sec-head">
+      <span class="eyebrow">Skills</span>
+      <h2>Tools I use every day</h2>
+      <p>Grouped by layer — from cloud infrastructure up through delivery, security and observability.</p>
+    </div>
+    <div class="stack">
+      <div class="stackcard">
+        <div class="lbl">Cloud — AWS</div>
+        <h3>Infrastructure &amp; networking</h3>
+        <div class="tags">
+          <span class="tag">EKS</span><span class="tag">EC2</span><span class="tag">VPC</span><span class="tag">IAM</span><span class="tag">S3</span><span class="tag">RDS</span><span class="tag">Redshift</span><span class="tag">ECR</span><span class="tag">ALB / NLB</span><span class="tag">Route 53</span><span class="tag">Auto Scaling</span>
+        </div>
+      </div>
+      <div class="stackcard">
+        <div class="lbl">Kubernetes &amp; GitOps</div>
+        <h3>Container platform</h3>
+        <div class="tags">
+          <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">Argo CD</span><span class="tag">Flux</span><span class="tag">Docker</span><span class="tag">RBAC</span><span class="tag">Network Policies</span><span class="tag">Cluster hardening</span>
+        </div>
+      </div>
+      <div class="stackcard">
+        <div class="lbl">IaC &amp; CI/CD</div>
+        <h3>Provisioning &amp; delivery</h3>
+        <div class="tags">
+          <span class="tag">Terraform</span><span class="tag">Ansible</span><span class="tag">Jenkins</span><span class="tag">Git</span><span class="tag">Maven</span><span class="tag">Nexus</span><span class="tag">JFrog Artifactory</span>
+        </div>
+      </div>
+      <div class="stackcard">
+        <div class="lbl">Security &amp; observability</div>
+        <h3>Guardrails &amp; insight</h3>
+        <div class="tags">
+          <span class="tag">Trivy</span><span class="tag">SonarQube</span><span class="tag">Checkmarx</span><span class="tag">AWS WAF</span><span class="tag">Cloudflare WAF</span><span class="tag">GuardDuty</span><span class="tag">Prometheus</span><span class="tag">Grafana</span><span class="tag">Datadog</span><span class="tag">CloudWatch</span>
+        </div>
+      </div>
+    </div>
+    <div class="metarow">
+      <div class="panel">
+        <h3>Languages &amp; systems</h3>
+        <div class="kv"><span class="k">automation</span><span class="v">Python · Bash · Go</span></div>
+        <div class="kv"><span class="k">systems</span><span class="v">Linux &amp; Windows Server administration</span></div>
+        <div class="kv"><span class="k">secrets</span><span class="v">Secrets management · supply-chain scanning</span></div>
+      </div>
+      <div class="panel">
+        <h3>Ways of working</h3>
+        <div class="kv"><span class="k">delivery</span><span class="v">GitOps by default</span></div>
+        <div class="kv"><span class="k">security</span><span class="v">Shift-left, blocking gates</span></div>
+        <div class="kv"><span class="k">on-call</span><span class="v">Primary incident responder</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="impact">
+    <div class="sec-head">
+      <span class="eyebrow">Impact</span>
+      <h2>What I deliver</h2>
+      <p>Platform work is judged on release speed, reliability, security and cloud cost — here's where I move each one.</p>
+    </div>
+    <div class="impact">
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg></div>
+        <h3>Faster, traceable releases</h3>
+        <p>A standardised Jenkins → Nexus/JFrog → Argo CD pipeline, reused across services, that takes release lead time from days to minutes with full traceability.</p>
+      </div>
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 14 3-4 4 3 5-7"/></svg></div>
+        <h3>Lower cloud spend</h3>
+        <p>Right-sizing, Auto Scaling policies and storage lifecycle rules — driven by CloudWatch and Datadog analysis — that cut monthly AWS cost without hurting reliability.</p>
+      </div>
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Security as a gate</h3>
+        <p>Trivy, SonarQube and Checkmarx wired in as blocking pipeline gates, plus AWS &amp; Cloudflare WAF rules — cutting critical CVEs that ever reach production.</p>
+      </div>
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v6H4zM4 14h16v6H4z"/><path d="M8 7h.01M8 17h.01"/></svg></div>
+        <h3>Zero configuration drift</h3>
+        <p>Every deployment moved to GitOps with automated sync, self-healing and pruning — so environments stay identical and recover on their own.</p>
+      </div>
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Reliable operations</h3>
+        <p>Primary responder for P1/P2 incidents — root-causing through logs and metrics on a Prometheus / Grafana / Datadog stack and improving MTTR.</p>
+      </div>
+      <div class="icard">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Legacy brought into the fold</h3>
+        <p>Legacy services automated with Ansible dynamic inventory, so monoliths and containerised workloads share one release and monitoring process.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-head">
+      <span class="eyebrow">Experience</span>
+      <h2>Work experience</h2>
+    </div>
+    <div class="xp">
+      <div class="xp-head">
+        <div>
+          <h3>DevOps Engineer</h3>
+          <div class="co">Digitize Code</div>
+        </div>
+        <div class="when">2023 — Present</div>
+      </div>
+      <div class="xp-body">
+        <ul>
+          <li><b>Architected AWS environments</b> — EKS, VPC, RDS, Redshift and ALB/NLB provisioned with Terraform and Ansible, standardising every environment and removing manual setup from onboarding.</li>
+          <li><b>Designed the CI/CD platform on Jenkins</b> — automated packaging, container builds, semantic image versioning and artifact publishing to Nexus and JFrog, with environment config updated automatically for full traceability.</li>
+          <li><b>Led the migration to GitOps</b> with Argo CD and Flux — introducing automated sync, pruning and drift recovery so services deploy without manual <code>kubectl</code> access.</li>
+          <li><b>Built a reusable Helm chart library</b> covering registry auth, health probes, resource limits and app config — adopted as the standard for all new services.</li>
+          <li><b>Embedded security into delivery</b> — Trivy image scanning, SonarQube and Checkmarx SAST gates, plus Cloudflare and AWS WAF rules, rate limiting and access policies protecting public endpoints.</li>
+          <li><b>Established the observability stack</b> — Prometheus, Grafana, Datadog and CloudWatch with alerting and dashboards used for capacity planning and cost reviews.</li>
+          <li><b>Primary production incident responder</b> — root-caused P1/P2 incidents through log and metric analysis, supported security investigations and improved MTTR.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="certs">
+    <div class="sec-head">
+      <span class="eyebrow">Certifications</span>
+      <h2>Certified &amp; verified</h2>
+      <p>Five Linux Foundation / CNCF credentials, each with a verifiable credential ID.</p>
+    </div>
+    <div class="certs">
+      <div class="cert">
+        <div class="badge">CKS</div>
+        <div class="meta">
+          <h3>Certified Kubernetes Security Specialist</h3>
+          <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Verified · Linux Foundation</span>
+          <div class="cid">Credential ID · LF-1yf0hfbchb</div>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="badge">CKA</div>
+        <div class="meta">
+          <h3>Certified Kubernetes Administrator</h3>
+          <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Verified · Linux Foundation</span>
+          <div class="cid">Credential ID · LF-cv3olutlgx</div>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="badge">CKAD</div>
+        <div class="meta">
+          <h3>Certified Kubernetes Application Developer</h3>
+          <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Verified · Linux Foundation</span>
+          <div class="cid">Credential ID · LF-u1rux3jn81</div>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="badge">KCSA</div>
+        <div class="meta">
+          <h3>Kubernetes &amp; Cloud Native Security Associate</h3>
+          <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Verified · Linux Foundation</span>
+          <div class="cid">Credential ID · LF-42iv33e4ex</div>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="badge">KCNA</div>
+        <div class="meta">
+          <h3>Kubernetes &amp; Cloud Native Associate</h3>
+          <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Verified · Linux Foundation</span>
+          <div class="cid">Credential ID · LF-nq42o7rlvt</div>
+        </div>
+      </div>
+    </div>
+    <div class="metarow">
+      <div class="panel">
+        <h3>Education</h3>
+        <div class="kv"><span class="k">degree</span><span class="v">B.Eng.</span></div>
+        <div class="kv"><span class="k">institution</span><span class="v">Arab Academy for Science, Technology &amp; Maritime Transport</span></div>
+        <div class="kv"><span class="k">graduated</span><span class="v">July 2023 · Cairo</span></div>
+      </div>
+      <div class="panel">
+        <h3>Languages</h3>
+        <div class="kv"><span class="k">arabic</span><span class="v">Native</span></div>
+        <div class="kv"><span class="k">english</span><span class="v">Professional working</span></div>
+        <div class="kv"><span class="k">based in</span><span class="v">Cairo, Egypt</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <span class="eyebrow" style="justify-content:center">Open to opportunities</span>
+      <h2>Get in touch</h2>
+      <p>Hiring for DevOps, Platform, SRE or Cloud Infrastructure? I'm happy to talk through your delivery pipeline, EKS setup or cloud cost.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://linkedin.com/in/mohanadsherby" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V10.4H5.67v7.94h2.67zM7 9.24a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zm11.34 9.1v-4.36c0-2.33-1.25-3.42-2.91-3.42a2.5 2.5 0 0 0-2.27 1.25v-1.07h-2.67c.03.75 0 7.94 0 7.94h2.67v-4.43c0-.24.02-.48.09-.65.19-.48.62-.97 1.35-.97.96 0 1.34.73 1.34 1.79v4.26h2.67z"/></svg>
+          linkedin.com/in/mohanadsherby
+        </a>
+        <a class="btn ghost" href="https://github.com/Mohanadsherby" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.554 0-.273-.01-.998-.015-1.96-3.196.695-3.87-1.54-3.87-1.54-.523-1.33-1.278-1.684-1.278-1.684-1.044-.714.08-.7.08-.7 1.155.082 1.763 1.187 1.763 1.187 1.026 1.758 2.693 1.25 3.35.955.104-.743.401-1.25.73-1.538-2.552-.29-5.236-1.276-5.236-5.678 0-1.254.448-2.28 1.183-3.084-.119-.29-.513-1.46.112-3.043 0 0 .965-.309 3.163 1.178a11 11 0 0 1 2.88-.387c.977.004 1.96.132 2.88.387 2.196-1.487 3.16-1.178 3.16-1.178.626 1.583.232 2.753.114 3.043.737.804 1.182 1.83 1.182 3.084 0 4.413-2.688 5.385-5.248 5.67.413.355.78 1.056.78 2.13 0 1.538-.014 2.778-.014 3.157 0 .307.207.666.79.553A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+          GitHub
+        </a>
+        <a class="btn ghost" href="mailto:mohanadsherby@gmail.com">mohanadsherby@gmail.com</a>
+        <a class="btn ghost" href="tel:+201099279724">+20 109 927 9724</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Mohanad Ashraf Sherby <span class="sep">·</span> Senior DevOps Engineer <span class="sep">·</span> Cairo, Egypt
+</footer>
+
+<script>
+  (function(){
+    var root = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    var icon = document.getElementById('themeIcon');
+    function current(){
+      var t = root.getAttribute('data-theme');
+      if(t) return t;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function apply(t){
+      if(t === 'dark' || t === 'light'){ root.setAttribute('data-theme', t); }
+      else { root.removeAttribute('data-theme'); }
+      icon.textContent = (current() === 'dark') ? '●' : '◐';
+    }
+    var saved;
+    try { saved = localStorage.getItem('ms-theme'); } catch(e){}
+    if(saved){ apply(saved); } else { apply('dark'); }
+    btn.addEventListener('click', function(){
+      var next = current() === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('ms-theme', next); } catch(e){}
+    });
+  })();
+</script>
